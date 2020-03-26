@@ -14,21 +14,21 @@ import static org.junit.Assert.assertEquals;
 @SpringBootTest
 public class BadcodeApplicationTests {
 
-	@Autowired
-	PersonService personService;
+    @Autowired
+    PersonService personService;
 
-	@Test
-	public void rightAdultMalePeopleAverageBMI() throws PersonNotFoundException {
-		assertEquals(personService.getPeopleOlderThenAgeAndSex(18L, "male"), 25.774209960992707, 25.774209960992707 * 0.03);
-	}
+    @Test
+    public void rightAdultMalePeopleAverageBMI() throws PersonNotFoundException {
+        assertEquals(personService.getPeopleOlderThenAgeAndSex(18L, "male"), 25.774209960992707, 25.774209960992707 * 0.03);
+    }
 
-	@Test
-	public void rightYoungFemalePeopleAverageBMI() throws PersonNotFoundException {
-		assertEquals(personService.getPeopleOlderThenAgeAndSex(18L, "female"), 19.113573407202217, 19.113573407202217 * 0.03);
-	}
+    @Test
+    public void rightYoungFemalePeopleAverageBMI() throws PersonNotFoundException {
+        assertEquals(personService.getPeopleOlderThenAgeAndSex(18L, "female"), 19.113573407202217, 19.113573407202217 * 0.03);
+    }
 
-	@Test(expected = PersonNotFoundException.class)
-	public void rightException() throws PersonNotFoundException {
-		personService.getPeopleOlderThenAgeAndSex(70L,"female");
-	}
+    @Test(expected = PersonNotFoundException.class)
+    public void rightException() throws PersonNotFoundException {
+        personService.getPeopleOlderThenAgeAndSex(70L, "female");
+    }
 }

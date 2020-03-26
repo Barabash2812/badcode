@@ -14,14 +14,19 @@ public class Person {
     @Id
     @NaturalId
     private Long id;
+
     @Column
     private String sex;
+
     @Column
     private String name;
+
     @Column
     private Long age;
+
     @Column
     private Long weight;
+
     @Column
     private Long height;
 

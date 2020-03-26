@@ -1,15 +1,29 @@
 package ru.liga.intership.badcode.domain;
 
+import org.hibernate.annotations.NaturalId;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table
 public class Person {
-    private Long id;
-    private String sex;
-    private String name;
-    private Long age;
-    private Long weight;
-    private Long height;
 
+    @Id
+    @NaturalId
+    private Long id;
+    @Column
+    private String sex;
+    @Column
+    private String name;
+    @Column
+    private Long age;
+    @Column
+    private Long weight;
+    @Column
+    private Long height;
 
     public Person() {
     }

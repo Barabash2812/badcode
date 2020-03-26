@@ -1,55 +1,38 @@
 package ru.liga.intership.badcode.service;
 
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.liga.intership.badcode.domain.Person;
+import ru.liga.intership.badcode.exception.PersonNotFoundException;
+import ru.liga.intership.badcode.repository.PersonRepository;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class PersonService {
 
+    @Autowired
+    private PersonRepository personRepository;
 
-    /**
-     * Возвращает средний индекс массы тела всех лиц мужского пола старше 18 лет
-     *
-     * @return
-     */
-    public void getAdultMaleUsersAverageBMI() {
-        double totalImt = 0.0;
-        long countOfPerson = 0;
-        try {
+    public Double getPeopleOlderThenAgeAndSex(Long age, String sex) throws PersonNotFoundException {
+        double totalImt;
+        List<Person> adultPersons;
 
-            Connection conn = DriverManager.getConnection("jdbc:hsqldb:mem:test", "sa", "");
-            Statement statement = conn.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * FROM person WHERE sex = 'male' AND age > 18");
-            List<Person> adultPersons = new ArrayList<>();
-            while (rs.next()) {
-                Person p = new Person();
-                //Retrieve by column name
-                p.setId(rs.getLong("id"));
-                p.setSex(rs.getString("sex"));
-                p.setName(rs.getString("name"));
-                p.setAge(rs.getLong("age"));
-                p.setWeight(rs.getLong("weight"));
-                p.setHeight(rs.getLong("height"));
-                adultPersons.add(p);
-            }
+        adultPersons = personRepository.findPeopleByAgeAfterAndSex(age, sex).orElseThrow(
+                () -> new PersonNotFoundException("People older then " + age + " age with sex " + sex + " not found")
+        );
 
-            for (Person p : adultPersons) {
-                double heightInMeters = p.getHeight() / 100d;
-                double imt = p.getWeight() / (Double) (heightInMeters * heightInMeters);
-                totalImt += imt;
-            }
-            countOfPerson = adultPersons.size();
+        totalImt = adultPersons.stream()
+                .map(person -> {
+                    double heightInMeters = person.getHeight() / 100d;
+                    return person.getWeight() / (Double) (heightInMeters * heightInMeters);
+                })
+                .mapToDouble(imt -> imt)
+                .sum();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("Average imt - " + totalImt / countOfPerson);
+        double averageBMI = totalImt / adultPersons.size();
+        System.out.println("Average imt - " + averageBMI);
+
+        return averageBMI;
     }
-
 }
